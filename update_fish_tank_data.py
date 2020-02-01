@@ -7,6 +7,8 @@
 ## to it. You can then use something like GRafana to graph the results. I run this once every ten minutes
 ## from a cron entry.
 
+## Also make sure you have the influxdb client installed: pip install influxdb
+
 from influxdb import InfluxDBClient
 import requests
 import json
