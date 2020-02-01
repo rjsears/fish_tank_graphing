@@ -11,6 +11,10 @@
 
 ## Also make sure you have the influxdb client installed: pip install influxdb
 
+## You will need to setup API access on the Seneye website and get your device_id and creds to use the API. 
+## Be sure to replace the word "device_id" in the https request below with your actual device_id as well as
+## your email address and password otherwise this will fail.
+
 from influxdb import InfluxDBClient
 import requests
 import json
@@ -40,7 +44,7 @@ def write_data(measurement, value):
 
 def get_fish_tank_data():
     api_request = requests.get(
-        'https://api.seneye.com/v1/devices/76433?IncludeState=1&user=your_email_address@somewhere.com&pwd=letmein',
+        'https://api.seneye.com/v1/devices/device_id?IncludeState=1&user=your_email_address@somewhere.com&pwd=letmein',
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
     )
     response = api_request.json()
