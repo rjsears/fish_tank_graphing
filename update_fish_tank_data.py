@@ -19,8 +19,7 @@ import json
 import argparse
 
 # Setup Argparser for Debug Mode. Run this script from the command line with "--DEBUG"
-# to output data to the screen, otherwise False (or 0) to
-# record data to the database. When DEBUG = True, NO DATA will be written to the
+# to output data to the screen. When in DEBUG mode NO DATA will be written to the
 # database.
 parser = argparse.ArgumentParser()
 parser.add_argument("--DEBUG", action="store_true", help="Add '--DEBUG' to run script in DUBUG mode")
