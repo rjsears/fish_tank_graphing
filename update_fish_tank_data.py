@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 __author__ = 'Richard J. Sears'
-VERSION = "V0.0.2 (2020-02-02)"
+VERSION = "V0.0.3 (2020-02-02)"
 # richardjsears@gmail.com
 
 # Reads fish tank data utilizing Seneye API and writes data to InfluxDB
@@ -16,11 +16,16 @@ VERSION = "V0.0.2 (2020-02-02)"
 from influxdb import InfluxDBClient, exceptions
 import requests
 import json
+import argparse
 
-# Set DEBUG = True (or 1) to output data to the screen, otherwise False (or 0) to
+# Setup Argparser for Debug Mode. Run this script from the command line with "--DEBUG"
+# to output data to the screen, otherwise False (or 0) to
 # record data to the database. When DEBUG = True, NO DATA will be written to the
 # database.
-DEBUG = False
+parser = argparse.ArgumentParser()
+parser.add_argument("--DEBUG", action="store_true", help="Add '--DEBUG' to run script in DUBUG mode")
+args = parser.parse_args()
+DEBUG = args.DEBUG
 
 # InfluxDB connections settings
 influx_host = 'my_influxdb_host'
