@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 __author__ = 'Richard J. Sears'
-VERSION = "V0.0.3 (2020-02-02)"
+VERSION = "V0.0.4 (2020-02-02)"
 # richardjsears@gmail.com
 
 # Reads fish tank data utilizing Seneye API and writes data to InfluxDB
@@ -25,6 +25,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--DEBUG", action="store_true", help="Add '--DEBUG' to run script in DUBUG mode")
 args = parser.parse_args()
 DEBUG = args.DEBUG
+
+# Here you can set DEBUG2 to True or False to override the argparse default. This is so you can set
+# DEBUG mode on permanently for repeated testing without having to pass "--DEBUG" on the command line.
+DEBUG2 = False
 
 # InfluxDB connections settings
 influx_host = 'my_influxdb_host'
@@ -78,14 +82,14 @@ def get_fish_tank_data():
         for key in dict_json['exps']:
             if key in keys:
                 value = dict_json['exps'][key]['curr']
-                if DEBUG:
+                if DEBUG or DEBUG2:
                     print(key, value)
                 else:
                     write_data(key, float(value))
         # Convert temperature from C to F
         temp_in_c = float(dict_json['exps']['temperature']['curr'])
         temp_in_f = (9.0 / 5.0 * temp_in_c) + 32
-        if DEBUG:
+        if DEBUG or DEBUG2:
             print("temperature", temp_in_f)
         else:
             write_data('temperature', temp_in_f)
@@ -94,7 +98,7 @@ def get_fish_tank_data():
         for key in dict_json['exps']:
             if key in keys:
                 value = dict_json['exps'][key]['curr']
-                if DEBUG:
+                if DEBUG or DEBUG2:
                     print(key, value)
                 else:
                     write_data(key, float(value))
