@@ -1,17 +1,17 @@
 #!/usr/bin/python3
 
 __author__ = 'Richard J. Sears'
-VERSION = "V0.0.1 (2020-02-08)"
+VERSION = "V0.0.2 (2020-02-08)"
 # richardjsears@gmail.com
 
-# This is part of my fish tank monitoring system. I purchased and installed 
+# This is part of my fish tank monitoring system. I purchased and installed
 # the WiFi Hydroponics Kit from Atlas Scientific which uses (out of the box)
-# ThingSpeak to store date. I wanted to take this data and store it locally 
+# ThingSpeak to store date. I wanted to take this data and store it locally
 # in my Influx database for graphing and monitoring.
 
 # https://www.atlas-scientific.com/product_pages/kits/wifi.html
 
-# This requires a free Thingspeak account. 
+# This requires a free Thingspeak account.
 
 
 
@@ -44,8 +44,8 @@ influx_dbname = 'fish_tank'
 tank_name = "75planted"
 
 # ThingSpeak API Settings
-api_key = "xxxxxxxxxxxxxxxxx"
-channel = "1234567"
+api_key = "xxxxxxxxxxxxxxxxxx"
+channel = "xxxxxxxxx"
 
 # If you are like me and want to see your tank water temperature in Fahrenheit, set to True
 Temp_in_F = True
@@ -72,38 +72,39 @@ def write_data(measurement, value):
 
 
 def get_fish_tank_data_thingspeak():
-    url = "https://api.thingspeak.com/channels/{}/feeds.json?api_key={}&results=2".format(channel, api_key)
+    url = "https://api.thingspeak.com/channels/{}/feed/last.json?api_key={}&results=2".format(channel, api_key)
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     api_request = requests.get(url, headers=headers)
     response = api_request.json()
     to_json = json.dumps(response)
     dict_json = json.loads(to_json)
 
-    feeds = dict_json["feeds"]
-    for feed in feeds[0:1]:
-        pH_thingspeak = (feed['field1'])
-        if DEBUG or DEBUG2:
-            print ("pH = {}".format(pH_thingspeak))
-        else:
-            write_data("pH_thingspeak", float(pH_thingspeak))
-    for feed in feeds[0:1]:
-        EC_thingspeak = (feed['field2'])
-        if DEBUG or DEBUG2:
-            print("EC = {}".format(EC_thingspeak))
-        else:
-            write_data("EC_thingspeak", float(EC_thingspeak))
-    for feed in feeds[0:1]:
-        temp_in_C_thingspeak = (float(feed['field3']))
-        if DEBUG or DEBUG2:
-            print("Temp in C = {}".format(temp_in_C_thingspeak))
-        else:
-            write_data("Temp_in_C_thingspeak", (temp_in_C_thingspeak))
-        if Temp_in_F:
-            temp_in_F_thingspeak = (9.0 / 5.0 * temp_in_C_thingspeak) + 32
+    for keys in dict_json:
+        if 'field1' in keys:
+            pH_thingspeak = dict_json[keys]
             if DEBUG or DEBUG2:
-                print("Temp in F = {}".format(temp_in_F_thingspeak))
+                print ("pH = {}".format(pH_thingspeak))
             else:
-                write_data("Temp_in_F_thingspeak", (temp_in_F_thingspeak))
+                write_data("pH_thingspeak", float(pH_thingspeak))
+        if 'field2' in keys:
+            EC_thingspeak = dict_json[keys]
+            if DEBUG or DEBUG2:
+                print("EC = {}".format(EC_thingspeak))
+            else:
+                write_data("EC_thingspeak", float(EC_thingspeak))
+        if 'field3' in keys:
+            temp_in_C_thingspeak = (float(dict_json[keys]))
+            if DEBUG or DEBUG2:
+                print("Temp in C = {}".format(temp_in_C_thingspeak))
+            else:
+                write_data("Temp_in_C_thingspeak", (temp_in_C_thingspeak))
+            if Temp_in_F:
+                temp_in_F_thingspeak = (9.0 / 5.0 * temp_in_C_thingspeak) + 32
+                if DEBUG or DEBUG2:
+                    print("Temp in F = {}".format(temp_in_F_thingspeak))
+                else:
+                    write_data("Temp_in_F_thingspeak", (temp_in_F_thingspeak))
+
 
 
 def main():
@@ -112,3 +113,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
